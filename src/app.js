@@ -1,22 +1,21 @@
-const fs = require('fs');
+const fs = require("fs");
 
 const app = (req, res) => {
-  if (req.url == '/') {
-    fs.readFile('./src/index.html', 'utf8', (err, data) => {
+  let allFiles = [
+    "/src/images/freshorigins.jpg",
+    "/src/images/animated-flower-image-0021.gif",
+    "/src/main.css",
+    "/src/main.js"
+  ];
+  if (req.url == "/") {
+    fs.readFile("./src/index.html", "utf8", (err, data) => {
       res.write(data);
       res.statusCode = 200;
       res.end();
     });
   }
-  if (req.url == '/src/images/freshorigins.jpg') {
-    fs.readFile('./src/images/freshorigins.jpg', (err, data) => {
-      res.write(data);
-      res.statusCode = 200;
-      res.end();
-    });
-  }
-  if (req.url == '/src/images/animated-flower-image-0021.gif') {
-    fs.readFile('./src/images/animated-flower-image-0021.gif', (err, data) => {
+  if (allFiles.includes(req.url)) {
+    fs.readFile(`.${req.url}`, (err, data) => {
       res.write(data);
       res.statusCode = 200;
       res.end();
