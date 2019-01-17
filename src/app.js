@@ -10,9 +10,15 @@ const getFiles = function(url) {
 const app = (req, res) => {
   let file = getFiles(req.url);
   fs.readFile(file, (err, data) => {
-    res.write(data);
-    res.statusCode = 200;
-    res.end();
+    try {
+      res.write(data);
+      res.statusCode = 200;
+      res.end();
+    } catch (err) {
+      res.write("Not Found");
+      res.statusCode = 404;
+      res.end();
+    }
   });
 };
 
