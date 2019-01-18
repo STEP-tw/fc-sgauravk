@@ -3,18 +3,17 @@
   <head>
     <title>Page Title</title>
     <link rel="stylesheet" type="text/css" href="/src/main.css" />
-    <script src="/src/main.js"></script>
   </head>
   <body>
-    <header class="commentHeading">
+    <header class="headers">
       <h1><a href="/src/index.html"><<</a>Guest Book</h1>
     </header>
     <form method="POST">
       <h1>Leave a comment</h1>
-      <p>Name : <input type="text" name="name"/></p>
+      <p>Name : <input type="text" name="name" required/></p>
       <p>
         Comment:
-        <textarea name="comment" id="userComment" cols="40" rows="5"></textarea>
+        <textarea name="comment" required id="userComment" cols="40" rows="5"></textarea>
       </p>
       <p>
         <button class="submitButton">Submit</button>

@@ -1,6 +1,5 @@
 const fs = require("fs");
 const comments = require("./comments.json");
-const { createTable, arrangeCommentDetails } = require("./main.js");
 
 const getFiles = function(url) {
   if (url == "/") {
@@ -8,6 +7,40 @@ const getFiles = function(url) {
   }
   return `.${url}`;
 };
+
+const withTag = function(content, tag){
+  return `<${tag}>${content}</${tag}>`
+}
+
+const withStyleTag = function(content, tag){
+  return `<${tag} width = "500px">${content}</${tag}>`
+}
+
+const createTableRow = function(object){
+  let row = "";
+  row = row + withStyleTag(object.time, "td");
+  row = row + withStyleTag(object.name, "td");
+  row = row + withStyleTag(object.comment, "td");
+  return withTag(row, "tr");
+};
+
+const createTable = function(list){
+  let table = [];
+  let tableHeading = {time: "DATE_TIME", name: "NAME", comment: "COMMENT"};
+  let firstLine = withTag(createTableRow(tableHeading), "th");
+  table.push(firstLine);
+  list.map(element => table.push(createTableRow(element)));
+  return table.join("");
+}
+
+const arrangeCommentDetails = function(details) {
+  let time = new Date().toLocaleString();
+  let name = details.split("&")[0].split("=")[1];
+  name = name.split("+").join(" ");
+  let comment = details.split("&")[1].split("=")[1];
+  comment = comment.split("+").join(" ");
+  return { name, comment, time };
+ };
 
 const getHtml = function(res) {
   fs.readFile("./src/guestBook.html", (err, data) => {
@@ -32,12 +65,7 @@ const extrectUserComments = function(req) {
   });
 };
 
-const app = (req, res) => {
-  if (req.url == "/src/guestBook.html" && req.method == "POST") {
-    extrectUserComments(req);
-    getHtml(res);
-    return;
-  }
+const handleRequest = function(req, res){
   let filePath = getFiles(req.url);
   fs.readFile(filePath, (err, content) => {
     try {
@@ -50,6 +78,19 @@ const app = (req, res) => {
       res.end();
     }
   });
+}
+
+const app = (req, res) => {
+  if (req.url == "/src/guestBook.html" && req.method == "POST") {
+    extrectUserComments(req);
+    getHtml(res);
+    return;
+  }
+  if (req.url == "/src/guestBook.html" && req.method == "GET"){
+    getHtml(res);
+    return;
+  }
+  handleRequest(req, res);
 };
 
 module.exports = app;
