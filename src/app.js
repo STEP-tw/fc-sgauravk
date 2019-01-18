@@ -11,7 +11,8 @@ const getFiles = function(url) {
 
 const getHtml = function(res) {
   fs.readFile("./src/guestBook.html", (err, data) => {
-    data += createTable(comments);
+    let table = createTable(comments);
+    data += "<table>" + table + "</table>";
     res.write(data);
     res.end();
   });
@@ -24,7 +25,6 @@ const extrectUserComments = function(req) {
     content += chunk;
   });
   req.on("end", () => {
-    console.log(content);
     comments.unshift(arrangeCommentDetails(content));
     fs.writeFile("./src/comments.json", JSON.stringify(comments), err => {
       return;

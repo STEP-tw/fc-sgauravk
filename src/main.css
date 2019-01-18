@@ -31,10 +31,7 @@
   background-color: lightgrey;
 }
 
-.table{
+.table {
   border: 1px solid black;
-  text-align: center;
-  margin: auto;
-  font-size: 20px;
   padding-right: 1500px;
 }
