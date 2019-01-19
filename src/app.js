@@ -5,7 +5,7 @@ const getFiles = function(url) {
   if (url == "/") {
     return "./public/index.html";
   }
-  return `.${url}`;
+  return `./public${url}`;
 };
 
 const withTag = function(content, tag){
@@ -36,9 +36,9 @@ const createTable = function(list){
 const arrangeCommentDetails = function(details) {
   let time = new Date().toLocaleString();
   let name = details.split("&")[0].split("=")[1];
-  name = name.split("+").join(" ");
+  // name = name.replace("+"," ");
   let comment = details.split("&")[1].split("=")[1];
-  comment = comment.split("+").join(" ");
+  // comment = comment.replace("+"," ");
   return { name, comment, time };
  };
 
