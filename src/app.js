@@ -1,9 +1,9 @@
 const fs = require("fs");
-const comments = require("./comments.json");
+const comments = require("../public/comments.json");
 
 const getFiles = function(url) {
   if (url == "/") {
-    return "./src/index.html";
+    return "./public/index.html";
   }
   return `.${url}`;
 };
@@ -43,7 +43,7 @@ const arrangeCommentDetails = function(details) {
  };
 
 const getHtml = function(res) {
-  fs.readFile("./src/guestBook.html", (err, data) => {
+  fs.readFile("./public/guestBook.html", (err, data) => {
     let table = createTable(comments);
     data += "<table>" + table + "</table>";
     res.write(data);
@@ -59,7 +59,7 @@ const extrectUserComments = function(req) {
   });
   req.on("end", () => {
     comments.unshift(arrangeCommentDetails(content));
-    fs.writeFile("./src/comments.json", JSON.stringify(comments), err => {
+    fs.writeFile("./public/comments.json", JSON.stringify(comments), err => {
       return;
     });
   });
@@ -81,12 +81,12 @@ const handleRequest = function(req, res){
 }
 
 const app = (req, res) => {
-  if (req.url == "/src/guestBook.html" && req.method == "POST") {
+  if (req.url == "/public/guestBook.html" && req.method == "POST") {
     extrectUserComments(req);
     getHtml(res);
     return;
   }
-  if (req.url == "/src/guestBook.html" && req.method == "GET"){
+  if (req.url == "/public/guestBook.html" && req.method == "GET"){
     getHtml(res);
     return;
   }
