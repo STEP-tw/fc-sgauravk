@@ -2,45 +2,13 @@ const fs = require("fs");
 const App = require("./framework");
 const app = new App();
 const comments = require("../public/comments.json");
+const {createTable, arrangeCommentDetails} = require("./util.js");
 
 const getFilePath = function(url) {
   if (url == "/") {
     return "./public/index.html";
   }
   return `./public${url}`;
-};
-
-const withTag = function(content, tag) {
-  return `<${tag}>${content}</${tag}>`;
-};
-
-const withStyleTag = function(content, tag) {
-  return `<${tag} width = "500px">${content}</${tag}>`;
-};
-
-const createTableRow = function(object) {
-  let row = "";
-  row = row + withStyleTag(object.time, "td");
-  row = row + withStyleTag(object.name, "td");
-  row = row + withStyleTag(object.comment, "td");
-  return withTag(row, "tr");
-};
-
-const createTable = function(list) {
-  let table = [];
-  let tableHeading = { time: "DATE_TIME", name: "NAME", comment: "COMMENT" };
-  table.push(withTag(createTableRow(tableHeading), "th"));
-  list.map(element => table.push(createTableRow(element)));
-  return withTag(table.join(""), "table");
-};
-
-const arrangeCommentDetails = function(details) {
-  let time = new Date().toLocaleString();
-  let name = details.split("&")[0].split("=")[1];
-  name = name.split("+").join(" ")
-  let comment = details.split("&")[1].split("=")[1];
-  comment = comment.split("+").join(" ")
-  return { name, comment, time };
 };
 
 const sendResponse = function(res, content, statusCode = 200) {
@@ -88,7 +56,7 @@ const handleFormPost = function(req, res) {
   });
 };
 
-app.post("/guestBook.html", handleFormPost);
 app.get("/guestBook.html", renderGuestBook);
+app.post("/guestBook.html", handleFormPost);
 app.use(renderMedia);
 module.exports = app.handleRequest.bind(app);
