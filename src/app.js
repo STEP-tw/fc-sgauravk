@@ -1,22 +1,24 @@
 const fs = require("fs");
+const App = require("./framework");
+const app = new App();
 const comments = require("../public/comments.json");
 
-const getFiles = function(url) {
+const getFilePath = function(url) {
   if (url == "/") {
     return "./public/index.html";
   }
   return `./public${url}`;
 };
 
-const withTag = function(content, tag){
-  return `<${tag}>${content}</${tag}>`
-}
+const withTag = function(content, tag) {
+  return `<${tag}>${content}</${tag}>`;
+};
 
-const withStyleTag = function(content, tag){
-  return `<${tag} width = "500px">${content}</${tag}>`
-}
+const withStyleTag = function(content, tag) {
+  return `<${tag} width = "500px">${content}</${tag}>`;
+};
 
-const createTableRow = function(object){
+const createTableRow = function(object) {
   let row = "";
   row = row + withStyleTag(object.time, "td");
   row = row + withStyleTag(object.name, "td");
@@ -24,73 +26,69 @@ const createTableRow = function(object){
   return withTag(row, "tr");
 };
 
-const createTable = function(list){
+const createTable = function(list) {
   let table = [];
-  let tableHeading = {time: "DATE_TIME", name: "NAME", comment: "COMMENT"};
-  let firstLine = withTag(createTableRow(tableHeading), "th");
-  table.push(firstLine);
+  let tableHeading = { time: "DATE_TIME", name: "NAME", comment: "COMMENT" };
+  table.push(withTag(createTableRow(tableHeading), "th"));
   list.map(element => table.push(createTableRow(element)));
-  return table.join("");
-}
+  return withTag(table.join(""), "table");
+};
 
 const arrangeCommentDetails = function(details) {
   let time = new Date().toLocaleString();
   let name = details.split("&")[0].split("=")[1];
-  // name = name.replace("+"," ");
+  name = name.split("+").join(" ")
   let comment = details.split("&")[1].split("=")[1];
-  // comment = comment.replace("+"," ");
+  comment = comment.split("+").join(" ")
   return { name, comment, time };
- };
+};
 
-const getHtml = function(res) {
+const sendResponse = function(res, content, statusCode = 200) {
+  res.statusCode = statusCode;
+  res.write(content);
+  res.end();
+  return;
+};
+
+const renderGuestBook = function(req, res) {
   fs.readFile("./public/guestBook.html", (err, data) => {
-    let table = createTable(comments);
-    data += "<table>" + table + "</table>";
-    res.write(data);
-    res.end();
+    data += createTable(comments);
+    sendResponse(res, data);
+    return;
+  });
+};
+
+const renderMedia = function(req, res) {
+  let filePath = getFilePath(req.url);
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      sendResponse(res, "Not Found", 404);
+      return;
+    }
+    sendResponse(res, content);
   });
   return;
 };
 
-const extrectUserComments = function(req) {
+extrectCommentsInFile = function(req, res, content) {
+  comments.unshift(arrangeCommentDetails(content));
+  let dataToWrite = JSON.stringify(comments);
+  fs.writeFile("./public/comments.json", dataToWrite, err => {
+    renderGuestBook(req, res);
+  });
+};
+
+const handleFormPost = function(req, res) {
   let content = "";
   req.on("data", chunk => {
     content += chunk;
   });
   req.on("end", () => {
-    comments.unshift(arrangeCommentDetails(content));
-    fs.writeFile("./public/comments.json", JSON.stringify(comments), err => {
-      return;
-    });
+    extrectCommentsInFile(req, res, content);
   });
 };
 
-const handleRequest = function(req, res){
-  let filePath = getFiles(req.url);
-  fs.readFile(filePath, (err, content) => {
-    try {
-      res.statusCode = 200;
-      res.write(content);
-      res.end();
-    } catch (err) {
-      res.statusCode = 404;
-      res.write("Not Found");
-      res.end();
-    }
-  });
-}
-
-const app = (req, res) => {
-  if (req.url == "/public/guestBook.html" && req.method == "POST") {
-    extrectUserComments(req);
-    getHtml(res);
-    return;
-  }
-  if (req.url == "/public/guestBook.html" && req.method == "GET"){
-    getHtml(res);
-    return;
-  }
-  handleRequest(req, res);
-};
-
-module.exports = app;
+app.post("/guestBook.html", handleFormPost);
+app.get("/guestBook.html", renderGuestBook);
+app.use(renderMedia);
+module.exports = app.handleRequest.bind(app);
