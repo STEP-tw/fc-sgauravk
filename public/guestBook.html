@@ -3,6 +3,7 @@
   <head>
     <title>Page Title</title>
     <link rel="stylesheet" type="text/css" href="/main.css" />
+    <script src="refreshComments.js"></script>
   </head>
   <body>
     <header class="headers">
@@ -16,11 +17,12 @@
           Comment:
         <textarea name="comment" required id="userComment" cols="40" rows="5"></textarea>
       </p>
-        <p><button class="submitButton">Submit</button></p>
+        <p><button> Submit </button></p>
       </form>
     </div>
     <div>
-      <h1>Comments <button class="submitButton">&#x21bb;</button></h1>
+      <h1>Comments <button onclick = "fetchComments()">&#x21bb;</button></h1>
     </div>
+    <div id="commentsBox"> </div>
   </body>
 </html>
