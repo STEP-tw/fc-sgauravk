@@ -22,10 +22,16 @@ const renderGuestBook = function(req, res) {
   });
 };
 
+const sendError = function(res) {
+  let content = `<html style="background-image: url(https://bit.ly/2Td4raY);
+    background-size: cover;"></html>`;
+  return sendResponse(res, content, 404);
+};
+
 const renderMedia = function(req, res) {
   let filePath = getFilePath(req.url);
   fs.readFile(filePath, (err, content) => {
-    if (err) return sendResponse(res, "Not Found", 404);
+    if (err) return sendError(res);
     sendResponse(res, content);
   });
 };
