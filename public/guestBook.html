@@ -8,17 +8,19 @@
     <header class="headers">
       <h1><a href="/index.html"><<</a>Guest Book</h1>
     </header>
-    <form method="POST">
-      <h1>Leave a comment</h1>
-      <p>Name : <input type="text" name="name" required/></p>
-      <p>
-        Comment:
+    <div style = "border-bottom: 2px solid black">
+      <form method="POST">
+        <h1>Leave a comment</h1>
+        <p>Name : <input type="text" name="name" required /></p>
+        <p>
+          Comment:
         <textarea name="comment" required id="userComment" cols="40" rows="5"></textarea>
       </p>
-      <p>
-        <button class="submitButton">Submit</button>
-      </p>
-    </form>
-    <table class="table"></table>
+        <p><button class="submitButton">Submit</button></p>
+      </form>
+    </div>
+    <div>
+      <h1>Comments <button class="submitButton">&#x21bb;</button></h1>
+    </div>
   </body>
 </html>
