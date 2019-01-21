@@ -19,7 +19,7 @@ const createTable = function(list) {
   let tableHeading = {time: "DATE_TIME", name: "NAME", comment: "COMMENT"};
   table.push(withTag(createTableRow(tableHeading), "th"));
   list.map(element => table.push(createTableRow(element)));
-  return withTag(table.join(""), "table");
+  return `<table class="table" id="commentBox"> ${table.join("")} </table>`
 };
 
 const arrangeCommentDetails = function(details) {
