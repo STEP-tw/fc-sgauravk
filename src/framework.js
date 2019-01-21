@@ -5,8 +5,8 @@ const isMatching = (req, route) => {
 };
 
 class App {
-  constructor() {
-    this.routes = [];
+  constructor(routes = []) {
+    this.routes = routes;
   }
 
   use(handler) {
@@ -25,9 +25,8 @@ class App {
     let matchingRoutes = this.routes.filter(r => isMatching(req, r));
     
     let next = () => {
-      let current = matchingRoutes[0];
+      let current = matchingRoutes.shift();
       if (!current) return;
-      matchingRoutes.shift();
       current.handler(req, res, next);
     };
     next();
