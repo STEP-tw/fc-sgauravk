@@ -1,5 +1,5 @@
 const fetchComments = function(){
-  fetch("/guestBook.html")
+  fetch("/html_pages/guestBook.html")
     .then(function(response) {
       return response.text();
     })
