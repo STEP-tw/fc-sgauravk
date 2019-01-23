@@ -18,7 +18,8 @@ const sendResponse = function(res, content, statusCode = 200) {
 
 const checkCookie = function(req, res, guestBook) {
   let content = guestBook.replace("##FORMHERE##", loginLogout.afterLogin);
-  sendResponse(res, content.replace("##USER##", req.cookies.username));
+  let userName = unescape(req.cookies.username).replace(/\+/g, " ");
+  sendResponse(res, content.replace("##USER##", userName));
 };
 
 const renderGuestBook = function(req, res) {
